@@ -17,7 +17,7 @@ class EnderecoController extends \yii\rest\ActiveController {
 
     public function actionObterEnderecoPorCep($cep)
     {
-        $address = Endereco::find()->where(['cep' => $cep])->all();
+        $address = Endereco::find()->where(['cep' => $cep])->one();
 
         if ( empty($address) ) {
             throw new NotFoundHttpException('Não foi encontrado endereço com este CEP');
@@ -28,7 +28,7 @@ class EnderecoController extends \yii\rest\ActiveController {
 
     public function actionObterEnderecoPorId($id)
     {
-        $address = Endereco::find()->where(['id' => $id])->all();
+        $address = Endereco::find()->where(['id' => $id])->one();
 
         if ( empty($address) ) {
             throw new NotFoundHttpException('Não foi encontrado endereço com este ID');

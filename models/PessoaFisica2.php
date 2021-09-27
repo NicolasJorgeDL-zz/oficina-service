@@ -16,8 +16,9 @@ use Yii;
  * @property Pedido[] $pedidos
  * @property TelefoneCliente[] $telefoneClientes
  */
-class Cliente extends \yii\db\ActiveRecord
+class PessoaFisica2 extends \yii\db\ActiveRecord
 {
+    public $cpf;
     /**
      * {@inheritdoc}
      */
@@ -32,11 +33,13 @@ class Cliente extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            ['cpf', 'filter', 'filter' => function($value) {
+                return preg_replace('/[^0-9]/', '', $value);
+            }],
             [['nome', 'cpf'], 'required'],
             [['nome'], 'string', 'max' => 255],
             [['cpf'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 45],
-            [['cpf'], 'unique'],
         ];
     }
 
