@@ -18,8 +18,8 @@ class Endereco extends ActiveRecord
     {
         return [
             ['cep', 'required'],
-            [['cep', 'bairro', 'uf', 'rua', 'complemento'], 'string'],
-            [['numero', 'Cidade_id', 'Cliente_id'], 'integer']
+            [['cep'], 'string'],
+            [['Cidade_id', 'Cliente_id', 'Bairro_id', 'Logradouro_id'], 'integer']
         ];
     }
 

@@ -57,7 +57,6 @@ class ClienteController extends \yii\rest\ActiveController {
             if ( !empty(Yii::$app->request->post('nome_cidade')) ) {
 
                 $cidade = Cidade::findOne(['nome' => Yii::$app->request->post('nome_cidade')]);
-
                 if ( empty($cidade) ) {
                     $cidade = new Cidade();
                     $cidade->nome = Yii::$app->request->post('nome_cidade');
@@ -66,9 +65,31 @@ class ClienteController extends \yii\rest\ActiveController {
                     }
                 }
 
+                $bairro = Bairro::findOne(['nome' => Yii::$app->request->post('nome_bairro')]);
+                if ( empty($bairro) ) {
+                    $bairro = new Bairro();
+                    $bairro->nome = Yii::$app->request->post('bairro');
+                    if ( !$bairro->save() ) {
+                        throw new Exception($bairro->getErrors());
+                    }
+                }
+
+                $logradouro = Logradouro::findOne(['nome_logradouro' => Yii::$app->request->post('nome_bairro')]);
+                if ( empty($logradouro) ) {
+                    $logradouro = new Logradouro();
+                    // $logradouro->nome_logradouro = Yii::$app->request->post('nome_logradouro');
+                    $logradouro->load(Yii::$app->request->post(), '');
+                    if ( !$logradouro->save() ) {
+                        throw new Exception($bairro->getErrors());
+                    }
+                }
+ 
                 $address->load(Yii::$app->request->post(), '');
                 $address->Cidade_id = $cidade->id;
                 $address->Cliente_id = $client->id;
+                $address->Bairro_id = $bairro->id;
+                $address->Logradouro_id = $logradouro->id;
+
                 if ( !$address->validate() ) {
                     return $address;
                 }
