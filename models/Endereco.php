@@ -3,9 +3,9 @@
 namespace app\models;
 
 use Yii;
-use yii\base\Model;
+use yii\db\ActiveRecord;
 
-class Endereco extends Model
+class Endereco extends ActiveRecord
 {
     public $bairro;
     public $numero;
@@ -19,5 +19,10 @@ class Endereco extends Model
         return [
             [['cidade', 'bairro'], 'required'],
         ];
+    }
+
+    public static function tableName()
+    {
+        return '{{Endereco}}';
     }
 }
