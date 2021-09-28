@@ -3,6 +3,8 @@
 namespace app\models;
 
 use Yii;
+use app\models\Pessoa;
+use app\validators\CnpjValidator;
 
 class PessoaJuridica extends \yii\db\ActiveRecord
 {
@@ -24,7 +26,9 @@ class PessoaJuridica extends \yii\db\ActiveRecord
             [['nome'], 'required'],
             [['nome'], 'string', 'max' => 255],
             [['documento'], 'string'],
+            // ['documento', 'unique'],
             [['email'], 'string', 'max' => 45],
+            ['documento', CnpjValidator::class],
         ];
     }
 
