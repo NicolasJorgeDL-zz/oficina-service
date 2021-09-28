@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\models\Pessoa;
+use app\validators\CnpjValidator;
 
 class PessoaJuridica extends Pessoa
 {
@@ -18,6 +19,8 @@ class PessoaJuridica extends Pessoa
             [['cnpj'], 'required'],
             [['cnpj'], 'string', 'max' => 15],
             [['cnpj'], 'unique'],
+            ['cnpj', CnpjValidator::className()],
+            
         ]);
     }
 

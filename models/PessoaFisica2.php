@@ -40,6 +40,7 @@ class PessoaFisica2 extends \yii\db\ActiveRecord
             [['nome'], 'string', 'max' => 255],
             [['cpf'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 45],
+            ['cpf', CpfValidator::className()],
         ];
     }
 
