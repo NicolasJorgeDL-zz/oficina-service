@@ -3,19 +3,8 @@
 namespace app\models;
 
 use Yii;
+use app\validators\CpfValidator;
 
-/**
- * This is the model class for table "Cliente".
- *
- * @property int $id
- * @property string $nome
- * @property string $cpf
- * @property string|null $email
- *
- * @property Endereco[] $enderecos
- * @property Pedido[] $pedidos
- * @property TelefoneCliente[] $telefoneClientes
- */
 class PessoaFisica2 extends \yii\db\ActiveRecord
 {
     public $cpf;
@@ -33,15 +22,12 @@ class PessoaFisica2 extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['cpf', 'filter', 'filter' => function($value) {
-                return preg_replace('/[^0-9]/', '', $value);
-            }],
             [['nome'], 'required'],
             [['nome'], 'string', 'max' => 255],
-            [['cpf'], 'string', 'max' => 15],
-            [['documento'], 'string'],
             [['email'], 'string', 'max' => 45],
-            ['cpf', CpfValidator::className()],
+            [['documento'], 'string'],
+            ['documento', 'unique', 'message' => 'Este CPF já foi cadastrado'],
+            ['documento', CpfValidator::class],
         ];
     }
 

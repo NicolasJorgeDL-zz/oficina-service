@@ -26,7 +26,7 @@ class PessoaJuridica extends \yii\db\ActiveRecord
             [['nome'], 'required'],
             [['nome'], 'string', 'max' => 255],
             [['documento'], 'string'],
-            // ['documento', 'unique'],
+            ['documento', 'unique', 'message' => 'Este CNPJ já está cadastrado'],
             [['email'], 'string', 'max' => 45],
             ['documento', CnpjValidator::class],
         ];
