@@ -36,9 +36,10 @@ class PessoaFisica2 extends \yii\db\ActiveRecord
             ['cpf', 'filter', 'filter' => function($value) {
                 return preg_replace('/[^0-9]/', '', $value);
             }],
-            [['nome', 'cpf'], 'required'],
+            [['nome'], 'required'],
             [['nome'], 'string', 'max' => 255],
             [['cpf'], 'string', 'max' => 15],
+            [['documento'], 'string'],
             [['email'], 'string', 'max' => 45],
         ];
     }

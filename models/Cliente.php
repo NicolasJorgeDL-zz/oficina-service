@@ -32,7 +32,7 @@ class Cliente extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nome', 'cpf'], 'required'],
+            [['nome'], 'required'],
             [['nome'], 'string', 'max' => 255],
             [['cpf'], 'string', 'max' => 15],
             [['email'], 'string', 'max' => 45],

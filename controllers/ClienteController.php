@@ -8,6 +8,7 @@ use yii\web\NotFoundHttpException;
 use app\models\Endereco;
 use app\models\UF;
 use app\models\Bairro;
+use app\models\Cliente;
 use app\models\Logradouro;
 use app\models\PessoaFisica;
 use app\models\PessoaFisica2;
@@ -23,31 +24,54 @@ class ClienteController extends \yii\rest\ActiveController {
         $actions = parent::actions();
         
         return $actions;
-    }   
+    }
+    
+    public function actionConsultarCliente($documento)
+    {
+        $documento = preg_replace('/\D/', '', $documento);
+        $cliente = Cliente::findOne(['documento' => $documento]);
+
+        if ( empty($cliente) ) {
+            throw new NotFoundHttpException("Cliente não encontrado");
+        }
+
+        return $cliente;
+    }
 
     public function actionCadastrarCliente()
     {
-        if ( !empty(Yii::$app->request->post('cpf')) ) {
-            $client = new PessoaFisica2();
+        $response = Yii::$app->response;
 
-        } else {
-            $client = new PessoaJuridica();
+        if ( empty(Yii::$app->request->post('documento')) ) {
+            $response->statusCode = 422;
+            $response->data = ['message' => 'CPF/CNPJ obrigatório'];
+
+            return $response;
         }
+
+        $documento = preg_replace('/\D/', '', Yii::$app->request->post('documento'));
+        if ( strlen($documento) == 11 ) {
+            $client = new PessoaFisica2();
+            
+        } else if (strlen($documento) == 14) {
+            $client = new PessoaJuridica();
+            
+        } else {
+            $response->statusCode = 422;
+            $response->data = ['message' => 'Documento inválido'];
+            
+            return $response;
+        }
+        
         $address = new Endereco();
         
         try {
             $tr = Yii::$app->db->beginTransaction();
-
+            
             $client->load(Yii::$app->request->post(), '');
             
             if ( !$client->validate() ) {
                 return $client;
-            }
-
-            if ( !empty($client->cnpj) ) {
-                $client->documento = $client->cnpj;
-            } else {
-                $client->documento = $client->cpf;
             }
 
             if ( !$client->save() ) {
@@ -65,7 +89,7 @@ class ClienteController extends \yii\rest\ActiveController {
                     }
                 }
 
-                $bairro = Bairro::findOne(['nome' => Yii::$app->request->post('nome_bairro')]);
+                $bairro = Bairro::findOne(['nome' => Yii::$app->request->post('bairro')]);
                 if ( empty($bairro) ) {
                     $bairro = new Bairro();
                     $bairro->nome = Yii::$app->request->post('bairro');
@@ -74,10 +98,9 @@ class ClienteController extends \yii\rest\ActiveController {
                     }
                 }
 
-                $logradouro = Logradouro::findOne(['nome_logradouro' => Yii::$app->request->post('nome_bairro')]);
+                $logradouro = Logradouro::findOne(['nome_logradouro' => Yii::$app->request->post('nome_logradouro')]);
                 if ( empty($logradouro) ) {
                     $logradouro = new Logradouro();
-                    // $logradouro->nome_logradouro = Yii::$app->request->post('nome_logradouro');
                     $logradouro->load(Yii::$app->request->post(), '');
                     if ( !$logradouro->save() ) {
                         throw new Exception($bairro->getErrors());
@@ -99,7 +122,6 @@ class ClienteController extends \yii\rest\ActiveController {
                 }
             }
 
-            $response = Yii::$app->response;
             $response->data = ['message' => 'Cliente cadastrado com sucesso'];
             $tr->commit();
 
